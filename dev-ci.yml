@@ -1,0 +1,156 @@
+db-deploy-dev:
+  stage: db_dev
+  variables:
+    ENVIRONMENT: dev
+    ACCOUNT_ID: "216961533243"   
+    DB_CLUSTER_IDENTIFIER: "dbs-cdm-devizdb-psql01"
+    CONNECTION_STRING_PARAMETER: "${DEV_CONNECTION_STRING_PARAMETER}"
+  extends: .db-deploy
+
+
+db-rollback-dev:
+  stage: db_dev
+  variables:
+    ENVIRONMENT: dev
+    ACCOUNT_ID: "216961533243"
+  extends: .db-rollback
+
+# Componenet Deployments DEV ##################################################################################################
+API-deploy-dev:
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  stage: deploy_dev
+  needs:
+    - validate
+    - fortify-sast-msbuild-with-report-1
+    - fortify-sast-msbuild-with-report-2
+    - publish-artefact
+  extends: 
+    - .prepare
+    - .deploy-component
+  variables:
+    ENVIRONMENT: "dev"
+    ACCOUNT_ID: "216961533243"
+    INSTANCE_IDS: "${DEV_INSTANCE_IDS}"
+    COMPONENT: "API"
+  environment: dev
+
+CAM-deploy-dev:
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  stage: deploy_dev
+  needs:
+    - validate
+    - fortify-sast-msbuild-with-report-1
+    - fortify-sast-msbuild-with-report-2
+    - publish-artefact
+  extends: 
+    - .prepare
+    - .deploy-component
+  variables:
+    ENVIRONMENT: "dev"
+    ACCOUNT_ID: "216961533243"
+    INSTANCE_IDS: "${DEV_INSTANCE_IDS}"
+    COMPONENT: "CAM"
+  environment: dev
+
+SAML-deploy-dev:
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  stage: deploy_dev
+  needs:
+    - validate
+    - fortify-sast-msbuild-with-report-1
+    - fortify-sast-msbuild-with-report-2
+    - publish-artefact
+  extends: 
+    - .prepare
+    - .deploy-component
+  variables:
+    ENVIRONMENT: "dev"
+    ACCOUNT_ID: "216961533243"
+    INSTANCE_IDS: "${DEV_INSTANCE_IDS}"
+    COMPONENT: "SAML"
+  environment: dev
+
+REPORT-deploy-dev:
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  stage: deploy_dev
+  needs:
+    - validate
+    - fortify-sast-msbuild-with-report-1
+    - fortify-sast-msbuild-with-report-2
+    - publish-artefact
+  extends: 
+    - .prepare
+    - .deploy-component
+  variables:
+    ENVIRONMENT: "dev"
+    ACCOUNT_ID: "216961533243"
+    INSTANCE_IDS: "${DEV_INSTANCE_IDS}"
+    COMPONENT: "REPORT"
+  environment: dev
+
+WEB-deploy-dev:
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  stage: deploy_dev
+  needs:
+    - validate
+    - fortify-sast-msbuild-with-report-1
+    - fortify-sast-msbuild-with-report-2
+    - publish-artefact
+  extends: 
+    - .prepare
+    - .deploy-component
+  variables:
+    ENVIRONMENT: "dev"
+    ACCOUNT_ID: "216961533243"
+    INSTANCE_IDS: "${DEV_INSTANCE_IDS}"
+    COMPONENT: "WEB"
+  environment: dev
+
+BATCH-deploy-dev:
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  stage: deploy_dev
+  needs:
+    - validate
+    - fortify-sast-msbuild-with-report-1
+    - fortify-sast-msbuild-with-report-2
+    - publish-artefact
+  extends: 
+    - .prepare
+    - .deploy-component
+  variables:
+    ENVIRONMENT: "dev"
+    ACCOUNT_ID: "216961533243"
+    INSTANCE_IDS: "${DEV_INSTANCE_IDS}"
+    COMPONENT: "BATCH"
+  environment: dev
+
+############################################################################################################
+FULL-deploy-dev:
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  stage: deploy_dev
+  needs:
+    - validate
+    - fortify-sast-msbuild-with-report-1
+    - fortify-sast-msbuild-with-report-2
+    - publish-artefact
+  extends: 
+    - .prepare
+    - .deploy
+  variables:
+    ENVIRONMENT: "dev"
+    ACCOUNT_ID: "216961533243"
+    INSTANCE_IDS: "${DEV_INSTANCE_IDS}"
+  environment: dev
+
+healthcheck-dev:
+  stage: healthcheck_dev
+  needs: []
+  extends: .healthcheck
+  variables:
+    ENVIRONMENT: "dev"
+    URL: "${DEV_URL}"
+    ACCOUNT_ID: "216961533243"
+    INSTANCE_IDS: ${DEV_INSTANCE_IDS}
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: manual
